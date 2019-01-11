@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import {Link} from 'react-router-dom';
 import '../App.css';
  class ComicThumbnail extends Component {
   constructor(props){
@@ -10,7 +11,7 @@ import '../App.css';
     this.handleLikeClick = this.handleLikeClick.bind(this)
   }
   componentDidMount(){
-    // this.setState({comic:this.props.comic});
+    this.setState({comic:this.props.comic});
     // console.log(this.state.comic.thumbnail);
     
   }
@@ -31,13 +32,18 @@ import '../App.css';
     let thumbnail = this.state.comic.thumbnail.path +"."+ this.state.comic.thumbnail.extension
     // let isLiked  = this.state.isLiked
     return (
-      < div className ={ "card col-md-3 col-sm-6"+(this.state.isLiked? ' liked':'')} >
-        < img className = "card-img-top img-responsive"
-        // src = {this.props.comic.images[0].path}alt = ""  />
-        src = {thumbnail} alt = ""  /> 
+      < div className ={ "card col-md-3 col-sm-4"+(this.state.isLiked? ' liked':'')} >
+        <Link to={`/comics/${this.state.comic.id}`}>
+          < img className="card-img-top img-responsive"
+            src={thumbnail} alt="" /> 
+        </Link>
         < div className = "card-body" >
         <p>{this.state.isLiked}</p>
-          <h2 className = "card-title" >{this.props.comic.title} </h2> 
+          < Link to = {
+            `/comics/${this.state.comic.id}`
+          } >
+            <h2 className = "card-title" >{this.state.comic.title} </h2> 
+          </ Link>
           <p>{this.state.isLiked}</p>
           < button
           className = "btn btn-primary" type="button" onClick={this.handleLikeClick} > <i className= "fa fa-thumbs-up" ></i>Like </ button >

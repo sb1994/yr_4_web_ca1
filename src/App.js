@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import ComicList from './components/ComicList';
+import ComicDetail from './components/ComicDetail'
 class App extends Component {
   render() {
     return (
@@ -17,6 +18,7 @@ class App extends Component {
             <div className="container">
               <Switch>
                 <Route exact path='/comics' component={ComicList} />
+                <Route exact path='/comics/:id' component={ComicDetail} />
               </Switch>
             </div>
           </div>
