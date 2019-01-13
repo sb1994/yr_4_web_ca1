@@ -48,26 +48,37 @@ class ComicList extends Component {
         });
     } else if (this.state.offset >= 0 && this.state.titleStartsWith === '') {
       this.setState({
-        // comics: response.data.data.results,
-        offset: this.state.offset - this.state.offset,
+        offset: 0,
         isDisabled:true
       });
       console.log(this.state.offset);
-      
       axios.get(`https://gateway.marvel.com:443/v1/public/comics?limit=16&offset=${this.state.offset}&apikey=61be4a8b6426e8e735c9682a26dbe279`)
       .then((response) => {
         this.setState({
           comics: response.data.data.results,
         });
-        
         console.log(this.state);
         
       }).catch((err) => {
         console.log(err);  
       });
+    } else if (this.state.offset === 0 && this.state.titleStartsWith !== '') {
+      this.setState({
+        offset: 0,
+        isDisabled: true
+      });
+      console.log(this.state.offset);
+      axios.get(`https://gateway.marvel.com:443/v1/public/comics?titleStartsWith=${this.state.titleStartsWith}&limit=16&offset=${this.state.offset}&apikey=61be4a8b6426e8e735c9682a26dbe279`)
+        .then((response) => {
+          this.setState({
+            comics: response.data.data.results,
+          });
+          console.log(this.state);
 
+        }).catch((err) => {
+          console.log(err);
+        });
     }
-    
   }
   handleSearchChange(e){
     this.setState({
@@ -92,37 +103,51 @@ class ComicList extends Component {
           console.log(err);
           
         });  
-      } else if (this.state.offset >= 0 && this.state.titleStartsWith === '') {
-        // this.setState({
-        //   offset: this.state.offset + 1
-        // })
-        axios.get(`https://gateway.marvel.com/v1/public/comics?limit=16&offset=${this.state.offset}&apikey=61be4a8b6426e8e735c9682a26dbe279`)
-        .then((response) => {
-          this.setState({
-            comics: response.data.data.results,
-            offset: this.state.offset + 1,
-            isDisabled: false
-          })
-          console.log(`Updated-offset ${this.state.offset}`);
-          // console.log(this.state.offset);
-        }).catch((err) => {
-          console.log(err);
-        });
-    }else{
-      console.log(this.state.offset,this.state.titleStartsWith);
-      
+    } else if (this.state.offset >= 0 && this.state.titleStartsWith === '') {
+      this.setState({
+        offset: this.state.offset + 1
+      })
+      axios.get(`https://gateway.marvel.com/v1/public/comics?limit=16&offset=${this.state.offset}&apikey=61be4a8b6426e8e735c9682a26dbe279`)
+      .then((response) => {
+        this.setState({
+          comics: response.data.data.results,
+          isDisabled: false
+        })
+        console.log(`Updated-offset ${this.state.offset}`);
+        // console.log(this.state.offset);
+      }).catch((err) => {
+        console.log(err);
+      }); 
+    }else if (this.state.offset >= 0 && this.state.titleStartsWith !== '') {
+      this.setState({
+        offset: this.state.offset + 1
+      })
       axios.get(`https://gateway.marvel.com/v1/public/comics?titleStartsWith=${this.state.titleStartsWith}&limit=16&offset=${this.state.offset}&apikey=61be4a8b6426e8e735c9682a26dbe279`)
-        .then((response) => {
-          this.setState({
-            comics: response.data.data.results,
-            offset: this.state.offset + 1,
-            isDisabled: false
-          })
-          console.log(this.state.offset);
-          // console.log(this.state.offset);
-        }).catch((err) => {
-          console.log(err);
-        });
+      .then((response) => {
+        this.setState({
+          comics: response.data.data.results,
+          isDisabled: false
+        })
+        console.log(`Updated-offset ${this.state.offset}`);
+        // console.log(this.state.offset);
+      }).catch((err) => {
+        console.log(err);
+      })
+    }else if (this.state.offset === 0 && this.state.titleStartsWith !== '') {
+      this.setState({
+        offset: this.state.offset + 1
+      })
+      axios.get(`https://gateway.marvel.com/v1/public/comics?titleStartsWith=${this.state.titleStartsWith}&limit=16&offset=${this.state.offset}&apikey=61be4a8b6426e8e735c9682a26dbe279`)
+      .then((response) => {
+        this.setState({
+          comics: response.data.data.results,
+          isDisabled:true
+        })
+        console.log(`Updated-offset ${this.state.offset}`);
+        // console.log(this.state.offset);
+      }).catch((err) => {
+        console.log(err);
+      });
     }
   }
   handlePrevClick(){
