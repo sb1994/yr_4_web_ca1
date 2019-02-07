@@ -8,83 +8,67 @@ class ComicList extends Component {
     this.state={
       comics:[],
       offset:0,
+      pageLimitSize:20,
+      startPage:1,
+      endPage:0,
+      currentPage:0,
+      comicCount:0,
       isDisabled:true,
-      titleStartsWith:''
+      titleStartsWith:'',
+      filteredComics:[]
     }
     this.handleNextClick = this.handleNextClick.bind(this)
     this.handlePrevClick = this.handlePrevClick.bind(this)
     this.handleSearchChange = this.handleSearchChange.bind(this)
-    this.handleSearchClick = this.handleSearchClick.bind(this)
+    // this.handleSearchClick = this.handleSearchClick.bind(this)
   }
   componentDidMount(){
-    axios.get(`https://gateway.marvel.com/v1/public/comics?limit=16&offset=0&apikey=61be4a8b6426e8e735c9682a26dbe279`)
-    .then((response) => {
-      this.setState({
-        comics: response.data.data.results
-      })
-      // this.setState({offset:response.data.data.offset+1});
-    }).catch((err) => {
-      console.log(err);  
-    });
-  }
-  handleSearchClick(){
-    // let url = `https://gateway.marvel.com:443/v1/public/comics?limit=16&titleStartsWith=${this.state.titleStartsWith}&apikey=61be4a8b6426e8e735c9682a26dbe279`
-    // console.log(url);
-    if (this.state.offset===0 && this.state.titleStartsWith === '') {
-      this.setState({
-        offset: 0,
-        isDisabled:true
-      })
-      axios.get('https://gateway.marvel.com/v1/public/comics?limit=16&offset=0&apikey=61be4a8b6426e8e735c9682a26dbe279')
-        .then((response) => {
-          this.setState({
-            comics: response.data.data.results,
-            offset: response.data.data.offset,
-            isDisabled:true
-          })
-          console.log('Searchbtn state when offset:0 , input: empty',this.state);
-        }).catch((err) => {
-          console.log(err);
-        });
-    } else if (this.state.offset >= 0 && this.state.titleStartsWith === '') {
-      this.setState({
-        offset: 0,
-        isDisabled:true
-      });
-      console.log(this.state.offset);
-      axios.get(`https://gateway.marvel.com:443/v1/public/comics?limit=16&offset=${this.state.offset}&apikey=61be4a8b6426e8e735c9682a26dbe279`)
+    // for (let i = 0; i < 2; i++) {
+    //   axios.get(`https://gateway.marvel.com/v1/public/comics?limit=100&offset=${i}&apikey=61be4a8b6426e8e735c9682a26dbe279`)
+    //     .then((response) => {
+    //       this.setState({
+    //         comics: [...this.state.comics, ...response.data.data.results]
+    //       })
+    //       console.log(this.state.comics);
+
+    //     }).catch((err) => {
+    //       console.log(err);
+    //     });
+    //   }
+    axios.get(`https://gateway.marvel.com/v1/public/comics?limit=100&offset=0&apikey=61be4a8b6426e8e735c9682a26dbe279`)
       .then((response) => {
         this.setState({
-          comics: response.data.data.results,
-        });
-        console.log(this.state);
-        
-      }).catch((err) => {
-        console.log(err);  
-      });
-    } else if (this.state.offset === 0 && this.state.titleStartsWith !== '') {
-      this.setState({
-        offset: 0,
-        isDisabled: true
-      });
-      console.log(this.state.offset);
-      axios.get(`https://gateway.marvel.com:443/v1/public/comics?titleStartsWith=${this.state.titleStartsWith}&limit=16&offset=${this.state.offset}&apikey=61be4a8b6426e8e735c9682a26dbe279`)
-        .then((response) => {
-          this.setState({
-            comics: response.data.data.results,
-          });
-          console.log(this.state);
+          comics: response.data.data.results
+        })
+        console.log(this.state.comics);
 
-        }).catch((err) => {
-          console.log(err);
-        });
-    }
+      }).catch((err) => {
+        console.log(err);
+      });
   }
   handleSearchChange(e){
     this.setState({
-      titleStartsWith:e.target.value
-    })
-    // console.log(this.state.titleStartsWith);
+      titleStartsWith:e.target.value,
+      filteredComics:[]
+    })// console.log(this.state.titleStartsWith);
+    //localversion of array
+    let localFilteredComics=[]
+    if (this.state.titleStartsWith !== '' ) {
+      localFilteredComics = this.state.comics.sort().filter((comic,i) => {
+        return comic.title.toLowerCase()
+        .indexOf(
+          this.state.titleStartsWith.toLowerCase()
+          ) !== -1
+        })
+        this.setState({
+          filteredComics:localFilteredComics
+        })// console.log(this.state.titleStartsWith);
+    }else{
+      this.setState({
+        filteredComics: this.state.comics
+      })
+    }
+    
   }
   handleNextClick(){
     if (this.state.offset === 0 && this.state.titleStartsWith === '') {
@@ -181,7 +165,18 @@ class ComicList extends Component {
     }
   }  
   render() {
-    let comicsList =  this.state.comics.map(comic=><ComicThumbnail key={comic.id} comic={comic}/>)
+    let comicsList =[]
+    if (this.state.titleStartsWith==='') {
+      comicsList= this.state.comics.map((comic, index) => (
+        <ComicThumbnail key={index} comic={comic} />
+      ));
+    }else{
+
+      
+      comicsList = this.state.filteredComics.map((comic, index) => <ComicThumbnail key={index} comic={comic} />) 
+      console.log(comicsList);
+      
+    }
     return (
       
       <div className="row">
@@ -192,30 +187,9 @@ class ComicList extends Component {
           </div>
         </div>
         <div className="col-md-12">
-          <div className="row">
-            <nav aria-label="Page navigation example">
-              <ul className="pagination">
-                <li className = {"page-item " + (
-                  this.state.isDisabled ? ' disabled' : ''
-                )} ><span className="page-link" onClick={this.handlePrevClick}>Previous</span></li>
-                <li className="page-item" ><span className="page-link" onClick={this.handleNextClick}> Next</span></li>
-              </ul>
-            </nav>
-          </div>
+          <p>results returned:{comicsList.length}</p>
         </div>
         {comicsList}
-        <div className="col-md-12">
-          <div className="row">
-            <nav aria-label="Page navigation example">
-              <ul className="pagination">
-                <li className = {"page-item " + (
-                  this.state.isDisabled ? ' disabled' : ''
-                )} ><span className="page-link" onClick={this.handlePrevClick}>Previous</span></li>
-                <li className="page-item" ><span className="page-link" onClick={this.handleNextClick}> Next</span></li>
-              </ul>
-            </nav>
-          </div>
-        </div>
       </div>
       
     )

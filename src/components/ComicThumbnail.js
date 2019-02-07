@@ -32,15 +32,15 @@ import '../App.css';
     let thumbnail = this.state.comic.thumbnail.path +"."+ this.state.comic.thumbnail.extension
     // let isLiked  = this.state.isLiked
     return (
-      < div className ={ "card col-md-3 col-sm-4"+(this.state.isLiked? ' liked':'')} >
-        <Link to={`/comics/${this.state.comic.id}`}>
+      < div className ={ " col-auto card col-md-3 col-sm-4"+(this.state.isLiked? ' liked':'')} >
+        <Link to={`/${this.state.comic.id}`}>
           < img className="card-img-top img-responsive"
             src={thumbnail} alt="" /> 
         </Link>
         < div className = "card-body" >
         <p>{this.state.isLiked}</p>
           < Link to = {
-            `/comics/${this.state.comic.id}`
+            `/${this.state.comic.id}`
           } >
             <h2 className = "card-title" >{this.state.comic.title} </h2> 
           </ Link>
