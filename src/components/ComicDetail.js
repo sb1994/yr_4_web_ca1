@@ -41,8 +41,8 @@ class ComicDetail extends Component {
   }
   render() {
     // const thumbnailURL = this.state.comic.thumbnail.path
-    const creatorsListItems = this.state.creators.map(creator=>
-        <li key={creator.role}><span>{creator.role}</span>- {creator.name}</li>
+    const creatorsListItems = this.state.creators.map((creator,index)=>
+        <li key={index}><span>{creator.role}</span>- {creator.name}</li>
       )
     return (
       <div>

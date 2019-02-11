@@ -7,44 +7,40 @@ class ComicList extends Component {
     super(props);
     this.state={
       comics:[],
-      offset:0,
-      pageLimitSize:20,
-      startPage:1,
-      endPage:0,
-      currentPage:0,
-      comicCount:0,
       isDisabled:true,
       titleStartsWith:'',
-      filteredComics:[]
+      filteredComics:[],
+      selectedFormat:''
     }
     this.handleNextClick = this.handleNextClick.bind(this)
     this.handlePrevClick = this.handlePrevClick.bind(this)
     this.handleSearchChange = this.handleSearchChange.bind(this)
-    // this.handleSearchClick = this.handleSearchClick.bind(this)
+    this.handleSearchClick = this.handleSearchClick.bind(this)
+    this.handleSelectChange = this.handleSelectChange.bind(this)
   }
   componentDidMount(){
-    // for (let i = 0; i < 2; i++) {
-    //   axios.get(`https://gateway.marvel.com/v1/public/comics?limit=100&offset=${i}&apikey=61be4a8b6426e8e735c9682a26dbe279`)
-    //     .then((response) => {
-    //       this.setState({
-    //         comics: [...this.state.comics, ...response.data.data.results]
-    //       })
-    //       console.log(this.state.comics);
+    for (let i = 0; i < 2; i++) {
+      axios.get(`https://gateway.marvel.com/v1/public/comics?limit=100&offset=${i}&apikey=61be4a8b6426e8e735c9682a26dbe279`)
+        .then((response) => {
+          this.setState({
+            comics: [...this.state.comics, ...response.data.data.results]
+          })
+          console.log(this.state.comics);
 
-    //     }).catch((err) => {
-    //       console.log(err);
-    //     });
-    //   }
-    axios.get(`https://gateway.marvel.com/v1/public/comics?limit=100&offset=0&apikey=61be4a8b6426e8e735c9682a26dbe279`)
-      .then((response) => {
-        this.setState({
-          comics: response.data.data.results
-        })
-        console.log(this.state.comics);
+        }).catch((err) => {
+          console.log(err);
+        });
+      }
+    // axios.get(`https://gateway.marvel.com/v1/public/comics?limit=100&offset=0&apikey=61be4a8b6426e8e735c9682a26dbe279`)
+    //   .then((response) => {
+    //     this.setState({
+    //       comics: response.data.data.results
+    //     })
+    //     console.log(this.state.comics);
 
-      }).catch((err) => {
-        console.log(err);
-      });
+    //   }).catch((err) => {
+    //     console.log(err);
+    //   });
   }
   handleSearchChange(e){
     this.setState({
@@ -55,6 +51,8 @@ class ComicList extends Component {
     let localFilteredComics=[]
     if (this.state.titleStartsWith !== '' ) {
       localFilteredComics = this.state.comics.sort().filter((comic,i) => {
+        // console.log(comic);
+        
         return comic.title.toLowerCase()
         .indexOf(
           this.state.titleStartsWith.toLowerCase()
@@ -63,119 +61,73 @@ class ComicList extends Component {
         this.setState({
           filteredComics:localFilteredComics
         })// console.log(this.state.titleStartsWith);
-    }else{
-      this.setState({
-        filteredComics: this.state.comics
-      })
     }
+      // this.setState({
+      //   filteredComics: this.state.comics
+      // })
+    
+    
     
   }
-  handleNextClick(){
-    if (this.state.offset === 0 && this.state.titleStartsWith === '') {
-      this.setState({
-        offset: this.state.offset + 1,
-      })
-      axios.get(`https://gateway.marvel.com/v1/public/comics?limit=16&offset=${this.state.offset}&apikey=61be4a8b6426e8e735c9682a26dbe279`)
-        .then((response) => {
-          this.setState({
-            comics: response.data.data.results,
-            // offset: this.state.offset+1,
-            isDisabled: false
-          })
-          // console.log(this.state.offset);
-        }).catch((err) => {
-          console.log(err);
-          
-        });  
-    } else if (this.state.offset >= 0 && this.state.titleStartsWith === '') {
-      this.setState({
-        offset: this.state.offset + 1
-      })
-      axios.get(`https://gateway.marvel.com/v1/public/comics?limit=16&offset=${this.state.offset}&apikey=61be4a8b6426e8e735c9682a26dbe279`)
-      .then((response) => {
-        this.setState({
-          comics: response.data.data.results,
-          isDisabled: false
-        })
-        console.log(`Updated-offset ${this.state.offset}`);
-        // console.log(this.state.offset);
-      }).catch((err) => {
-        console.log(err);
-      }); 
-    }else if (this.state.offset >= 0 && this.state.titleStartsWith !== '') {
-      this.setState({
-        offset: this.state.offset + 1
-      })
-      axios.get(`https://gateway.marvel.com/v1/public/comics?titleStartsWith=${this.state.titleStartsWith}&limit=16&offset=${this.state.offset}&apikey=61be4a8b6426e8e735c9682a26dbe279`)
-      .then((response) => {
-        this.setState({
-          comics: response.data.data.results,
-          isDisabled: false
-        })
-        console.log(`Updated-offset ${this.state.offset}`);
-        // console.log(this.state.offset);
-      }).catch((err) => {
-        console.log(err);
-      })
-    }else if (this.state.offset === 0 && this.state.titleStartsWith !== '') {
-      this.setState({
-        offset: this.state.offset + 1
-      })
-      axios.get(`https://gateway.marvel.com/v1/public/comics?titleStartsWith=${this.state.titleStartsWith}&limit=16&offset=${this.state.offset}&apikey=61be4a8b6426e8e735c9682a26dbe279`)
-      .then((response) => {
-        this.setState({
-          comics: response.data.data.results,
-          isDisabled:true
-        })
-        console.log(`Updated-offset ${this.state.offset}`);
-        // console.log(this.state.offset);
-      }).catch((err) => {
-        console.log(err);
-      });
-    }
-  }
-  handlePrevClick(){
-    // console.log('previous page');
+  handleSelectChange(e){
+    let selectedFormat = e.target.value
     
-    if (this.state.offset === 0) {
-      this.setState({
-        offset: 0,
-        isDisabled: true
-      })
-    }else{
-      this.setState({
-        offset: this.state.offset-1,
-        isDisabled: false
-      })
-      // let url = `https://gateway.marvel.com/v1/public/comics?limit=16&offset=${this.state.offset}&apikey=61be4a8b6426e8e735c9682a26dbe279`
-      // console.log(url);
+    this.setState({
+      selectedFormat: selectedFormat
+    }) //
+    
+  }
+  handleSearchClick(e){
+    let localFilteredComics
+    let {titleStartsWith,filteredComics,selectedFormat,comics} =this.state
+    console.log(this.state);
+    if (titleStartsWith !=='' && selectedFormat !=='') {
       
-      axios.get(`https://gateway.marvel.com/v1/public/comics?limit=16&offset=${this.state.offset}&apikey=a3b9711a705d3887e3524bf610e36053e33003c9`)
-        .then((response) => {
-          this.setState({
-            comics: response.data.data.results
-          })
-          this.setState({
-            offset: response.data.data.offset
-          });
-          // console.log(this.state.offset);
-        }).catch((err) => {
-          console.log(err);
-        }); 
+        localFilteredComics = comics.sort().filter((comic, i) => {
+          // console.log(comic);
+          return comic.title.toLowerCase()
+            .indexOf(
+              titleStartsWith.toLowerCase()
+            ) !== -1
+        })
+        localFilteredComics = localFilteredComics.sort().filter((comic, i) => {
+          // console.log(comic);
+          return comic.format ===selectedFormat
+        })
+       
+        this.setState({
+          filteredComics: localFilteredComics
+        }) // console.log(this.state.titleStartsWith);
+        console.log(localFilteredComics);
+    }else{
+
     }
-  }  
+    console.log();
+    if (titleStartsWith ==="" && selectedFormat !== '') {
+      localFilteredComics = this.state.comics.sort().filter((comic, i) => {
+        // console.log(comic);
+
+        return comic.format
+          .indexOf(
+            this.state.selectedFormat
+          ) !== -1
+      })
+      this.setState({
+        filteredComics: localFilteredComics
+      })
+    } 
+    // console.log(this.state.selectedFormat);
+  }
+  
   render() {
     let comicsList =[]
     if (this.state.titleStartsWith==='') {
       comicsList= this.state.comics.map((comic, index) => (
         <ComicThumbnail key={index} comic={comic} />
       ));
-    }else{
-
-      
+    }else if(this.state.filteredComics.length >0){
       comicsList = this.state.filteredComics.map((comic, index) => <ComicThumbnail key={index} comic={comic} />) 
-      console.log(comicsList);
-      
+      // console.log(comicsList.);
     }
     return (
       
@@ -183,11 +135,19 @@ class ComicList extends Component {
         <div className="col-md-12">
           <div className="row">
             <input type="text" name='titleStartsWith' value={this.state.titleStartsWith} onChange={this.handleSearchChange} />
+            <label>
+              Filter By preferd medium:
+              <select value={this.state.selectedFormat} onChange={this.handleSelectChange}>
+                <option>Please Select one</option>
+                < option value = "Comic" > Comic</option>
+                < option value = "Digital Comic" >Digital Comic</option>
+              </select>
+            </label>
             <button className="btn btn-primary" placeholder="Please enter part of a title" onClick={this.handleSearchClick}>Search</button>
           </div>
         </div>
         <div className="col-md-12">
-          <p>results returned:{comicsList.length}</p>
+          <p>Results returned:{comicsList.length}</p>
         </div>
         {comicsList}
       </div>
