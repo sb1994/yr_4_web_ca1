@@ -12,8 +12,6 @@ class ComicList extends Component {
       filteredComics:[],
       selectedFormat:''
     }
-    this.handleNextClick = this.handleNextClick.bind(this)
-    this.handlePrevClick = this.handlePrevClick.bind(this)
     this.handleSearchChange = this.handleSearchChange.bind(this)
     this.handleSearchClick = this.handleSearchClick.bind(this)
     this.handleSelectChange = this.handleSelectChange.bind(this)
@@ -23,6 +21,7 @@ class ComicList extends Component {
       axios.get(`https://gateway.marvel.com/v1/public/comics?limit=100&offset=${i}&apikey=61be4a8b6426e8e735c9682a26dbe279`)
         .then((response) => {
           this.setState({
+            //append results of second request onto first
             comics: [...this.state.comics, ...response.data.data.results]
           })
           console.log(this.state.comics);
@@ -31,16 +30,6 @@ class ComicList extends Component {
           console.log(err);
         });
       }
-    // axios.get(`https://gateway.marvel.com/v1/public/comics?limit=100&offset=0&apikey=61be4a8b6426e8e735c9682a26dbe279`)
-    //   .then((response) => {
-    //     this.setState({
-    //       comics: response.data.data.results
-    //     })
-    //     console.log(this.state.comics);
-
-    //   }).catch((err) => {
-    //     console.log(err);
-    //   });
   }
   handleSearchChange(e){
     this.setState({
@@ -50,6 +39,7 @@ class ComicList extends Component {
     //localversion of array
     let localFilteredComics=[]
     if (this.state.titleStartsWith !== '' ) {
+      //filters each comic based on user input
       localFilteredComics = this.state.comics.sort().filter((comic,i) => {
         // console.log(comic);
         
@@ -60,11 +50,14 @@ class ComicList extends Component {
         })
         this.setState({
           filteredComics:localFilteredComics
-        })// console.log(this.state.titleStartsWith);
+        })
+        // console.log(this.state.titleStartsWith);
     }
       // this.setState({
       //   filteredComics: this.state.comics
       // })
+      console.log(this.state);
+      
     
     
     
@@ -80,7 +73,8 @@ class ComicList extends Component {
   handleSearchClick(e){
     let localFilteredComics
     let {titleStartsWith,filteredComics,selectedFormat,comics} =this.state
-    console.log(this.state);
+    // console.log(this.state);
+
     if (titleStartsWith !=='' && selectedFormat !=='') {
       
         localFilteredComics = comics.sort().filter((comic, i) => {
@@ -102,7 +96,8 @@ class ComicList extends Component {
     }else{
 
     }
-    console.log();
+    // console.log();
+    //checks if the inputs are empty and makes axios request accordinly 
     if (titleStartsWith ==="" && selectedFormat !== '') {
       localFilteredComics = this.state.comics.sort().filter((comic, i) => {
         // console.log(comic);

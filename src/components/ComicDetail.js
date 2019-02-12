@@ -45,14 +45,20 @@ class ComicDetail extends Component {
         <li key={index}><span>{creator.role}</span>- {creator.name}</li>
       )
     return (
-      <div>
+      <div className="row">
         {/* <p>{this.state.comic.thumbnail.path}</p> */}
-        <p>{this.state.comic.title}</p>
-        <p>{this.state.comic.description}</p>
-        <img src={this.state.thumbnail} alt=""/>
-        <ul>
-          {creatorsListItems}
-        </ul>
+        <div className="col-md-6">
+          <img src={this.state.thumbnail} className="img-thumbnail float-left" alt=""/>
+        </div>
+        <div className="col-md-6">
+          <div className="row">
+            <h1>{this.state.comic.title}</h1>
+            <p>{this.state.comic.description}</p>
+            <ul>
+              {creatorsListItems}
+            </ul>
+          </div>
+        </div>
       </div>
     )
   }

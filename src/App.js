@@ -9,7 +9,6 @@ class App extends Component {
       <Router>
         <div className="App">
           <div>
-            <h2>Welcome to </h2>
             <nav className="navbar navbar-expand-lg navbar-light bg-light">
             <ul className="navbar-nav mr-auto">
               <li className="nav-item"><Link to={'/'} className="nav-link"> View Comics </Link></li>
@@ -17,6 +16,7 @@ class App extends Component {
             </nav>
             <hr />
             <div className="container">
+            {/* router that contains the routes ffor the app */}
               <Switch>
                 <Route exact path='/' component={ComicList} />
                 <Route exact path='/:id' component={ComicDetail} />
